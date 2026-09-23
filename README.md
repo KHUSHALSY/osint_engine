@@ -1,5 +1,4 @@
-# osint_engine
-An asynchronous, full-stack OSINT (Open Source Intelligence) scanner that checks 20 major developer and social platforms for username footprints in under 2 seconds, utilizing Google's Gemini AI to analyze scraped metadata and correlate cross-platform identities.
+This tool was developed strictly for educational purposes, ethical footprinting, and portfolio demonstration. Users are responsible for adhering to the Terms of Service of all targeted platforms. Do not use this software to harass, stalk, or maliciously scrape user data.
 # OSINT Engine 🕵️‍♂️
 
 ![Python](https://img.shields.io/badge/Python-3.14-blue)
