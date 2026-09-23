@@ -39,5 +39,4 @@ The engine currently correlates identities across 20 platforms, focusing heavily
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/yourusername/osint-project.git](https://github.com/yourusername/osint-project.git)
-   cd osint-project
+   git clone https://github.com/KHUSHALSY/osint_engine
