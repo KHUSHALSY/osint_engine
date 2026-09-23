@@ -3,69 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSINT Intelligence Scanner</title>
+    <title>OSINT Engine | Digital Footprint Scanner</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #0d1117; color: #c9d1d9; font-family: monospace; }
-        .neon-border { border: 1px solid #3fb950; box-shadow: 0 0 10px rgba(63, 185, 80, 0.2); }
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: #050505;
+            background-image: 
+                linear-gradient(rgba(0, 255, 128, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 128, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Animated Grid Background */
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at center, transparent 0%, #050505 80%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Glass Panel */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 128, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 128, 0.05);
+        }
+
+        /* Neon Text Glow */
+        .neon-text {
+            color: #00ff80;
+            text-shadow: 0 0 10px rgba(0, 255, 128, 0.5), 0 0 20px rgba(0, 255, 128, 0.3);
+        }
+
+        /* Cyber Button Hover */
+        .cyber-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .cyber-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 128, 0.2), transparent);
+            transition: all 0.4s ease;
+        }
+        .cyber-btn:hover::before {
+            left: 100%;
+        }
+        .cyber-btn:hover {
+            box-shadow: 0 0 15px rgba(0, 255, 128, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Scanning Animation Line */
+        .scan-line {
+            width: 100%;
+            height: 2px;
+            background: #00ff80;
+            box-shadow: 0 0 10px #00ff80;
+            animation: scan 2s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100px); opacity: 0; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #00ff80; border-radius: 4px; }
     </style>
 </head>
-<body class="flex flex-col items-center min-h-screen p-10">
+<body class="min-h-screen flex items-center justify-center p-6">
+    <div class="bg-grid"></div>
 
-    <div class="w-full max-w-3xl">
-        <h1 class="text-4xl text-[#3fb950] font-bold mb-2">TARGET SCANNER v1.0</h1>
-        <p class="text-gray-400 mb-8">Asynchronous Cross-Platform Footprint Analyzer</p>
-
-        <div class="flex gap-4 mb-8">
-            <input type="text" id="username" placeholder="Enter target username..." 
-                   class="w-full p-4 bg-[#161b22] border border-gray-700 rounded text-white focus:outline-none focus:border-[#3fb950]">
-            <button onclick="runScan()" 
-                    class="px-8 py-4 bg-[#238636] text-white font-bold rounded hover:bg-[#2ea043] transition">
-                INITIATE
-            </button>
+    <div class="w-full max-w-4xl flex flex-col gap-8 relative z-10">
+        
+        <!-- Header -->
+        <div class="text-center">
+            <h1 class="text-5xl font-extrabold neon-text tracking-tight mb-3 uppercase">OSINT Engine</h1>
+            <p class="text-slate-400 text-sm tracking-widest uppercase">Asynchronous Cross-Platform Intelligence</p>
         </div>
 
-        <div id="loading" class="hidden text-yellow-400 mb-4 animate-pulse">Scanning matrix... this takes ~2 seconds.</div>
+        <!-- Control Panel -->
+        <div class="glass-panel rounded-xl p-6 md:p-8 transform transition-all duration-500 hover:border-[#00ff80]/50">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="relative flex-grow">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500">
+                        @
+                    </div>
+                    <input type="text" id="username" placeholder="Enter target username..." 
+                           class="w-full pl-10 pr-4 py-4 bg-slate-900/80 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-[#00ff80] focus:ring-1 focus:ring-[#00ff80] transition-all font-mono text-lg"
+                           onkeypress="if(event.key === 'Enter') runScan()">
+                </div>
+                <button onclick="runScan()" 
+                        class="cyber-btn px-10 py-4 bg-[#00ff80]/10 border border-[#00ff80] text-[#00ff80] font-bold rounded-lg uppercase tracking-wider">
+                    Initiate Scan
+                </button>
+            </div>
+        </div>
 
-        <div id="results" class="hidden neon-border bg-[#161b22] rounded p-6">
-            <h2 class="text-2xl font-bold text-white mb-4 border-b border-gray-700 pb-2">Analysis Report</h2>
-            <div id="profiles" class="mb-6"></div>
-            <h3 class="text-lg font-bold text-[#58a6ff] mb-2">AI Correlation</h3>
-            <div id="report-text" class="text-gray-300 whitespace-pre-wrap"></div>
+        <!-- Terminal Loading State -->
+        <div id="loading" class="hidden glass-panel rounded-xl p-6 relative overflow-hidden h-32">
+            <div class="scan-line absolute top-0 left-0"></div>
+            <div class="flex items-center gap-4 text-[#00ff80]">
+                <svg class="animate-spin h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <div id="terminal-text" class="font-mono text-sm uppercase">Initializing asynchronous engine...</div>
+            </div>
+        </div>
+
+        <!-- Results Output -->
+        <div id="results" class="hidden flex-col gap-6 animate-fade-in-up">
+            
+            <!-- Found Profiles -->
+            <div class="glass-panel rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-6 border-b border-slate-700 pb-3">
+                    <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                    <h2 class="text-xl font-bold text-white tracking-widest uppercase">Target Matrix</h2>
+                </div>
+                <div id="profiles" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Profiles injected here -->
+                </div>
+            </div>
+
+            <!-- AI Report -->
+            <div class="glass-panel rounded-xl p-6 border-t-4 border-t-blue-500 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+                    <svg width="100" height="100" viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <h3 class="text-xl font-bold text-blue-400 mb-4 tracking-widest uppercase">Gemini AI Correlation</h3>
+                <div id="report-text" class="text-slate-300 leading-relaxed space-y-4 whitespace-pre-wrap font-sans text-sm md:text-base">
+                    <!-- AI text injected here -->
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
+        const terminalPhrases = [
+            "Bypassing standard WAFs...",
+            "Deploying asynchronous requests via aiohttp...",
+            "Checking 20 target arrays...",
+            "Parsing custom JSON endpoints...",
+            "Extracting metadata payload...",
+            "Transmitting data to Gemini AI Engine...",
+            "Calculating correlation probabilities..."
+        ];
+
         async function runScan() {
-            const username = document.getElementById('username').value;
+            const username = document.getElementById('username').value.trim();
             if (!username) return;
 
-            document.getElementById('loading').classList.remove('hidden');
-            document.getElementById('results').classList.add('hidden');
+            const loadingDiv = document.getElementById('loading');
+            const resultsDiv = document.getElementById('results');
+            const terminalText = document.getElementById('terminal-text');
+            
+            loadingDiv.classList.remove('hidden');
+            resultsDiv.classList.add('hidden');
             document.getElementById('profiles').innerHTML = '';
+
+            // Terminal text cycling animation
+            let phraseIndex = 0;
+            const textInterval = setInterval(() => {
+                phraseIndex = (phraseIndex + 1) % terminalPhrases.length;
+                terminalText.innerText = terminalPhrases[phraseIndex];
+            }, 1500);
 
             try {
                 const response = await fetch(`/api/scan?username=${username}`);
                 const data = await response.json();
 
-                document.getElementById('loading').classList.add('hidden');
-                document.getElementById('results').classList.remove('hidden');
+                clearInterval(textInterval);
+                loadingDiv.classList.add('hidden');
+                resultsDiv.classList.remove('hidden');
+                resultsDiv.classList.add('flex');
 
-                // Render Profiles
+                // Render Profiles as sleek cards
                 if (data.profiles && data.profiles.length > 0) {
-                    let links = '<ul class="list-disc pl-5 mb-4 space-y-2">';
+                    let cards = '';
                     data.profiles.forEach(url => {
-                        links += `<li><a href="${url}" target="_blank" class="text-blue-400 hover:underline">${url}</a></li>`;
+                        const domain = new URL(url).hostname.replace('www.', '');
+                        cards += `
+                            <a href="${url}" target="_blank" class="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-700/80 border border-slate-700 hover:border-[#00ff80] transition-colors group">
+                                <svg class="w-5 h-5 text-slate-400 group-hover:text-[#00ff80]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                <span class="text-sm font-medium text-slate-300 group-hover:text-white truncate">${domain}</span>
+                            </a>
+                        `;
                     });
-                    links += '</ul>';
-                    document.getElementById('profiles').innerHTML = links;
+                    document.getElementById('profiles').innerHTML = cards;
+                } else {
+                    document.getElementById('profiles').innerHTML = `<p class="text-red-400">No footprints detected.</p>`;
                 }
 
-                // Render Report
-                document.getElementById('report-text').innerText = data.report || "No correlation report generated.";
+                // Render Report with some basic markdown bolding
+                let formattedReport = data.report || "No correlation report generated.";
+                formattedReport = formattedReport.replace(/\*\*(.*?)\*\*/g, '<span class="text-white font-bold">$1</span>');
+                document.getElementById('report-text').innerHTML = formattedReport;
+
             } catch (error) {
-                document.getElementById('loading').classList.add('hidden');
-                alert("Error connecting to backend engine.");
+                clearInterval(textInterval);
+                loadingDiv.classList.add('hidden');
+                alert("Critical Error: Connection to backend engine severed.");
             }
         }
     </script>
