@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT Intelligence Scanner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0d1117; color: #c9d1d9; font-family: monospace; }
+        .neon-border { border: 1px solid #3fb950; box-shadow: 0 0 10px rgba(63, 185, 80, 0.2); }
+    </style>
+</head>
+<body class="flex flex-col items-center min-h-screen p-10">
+
+    <div class="w-full max-w-3xl">
+        <h1 class="text-4xl text-[#3fb950] font-bold mb-2">TARGET SCANNER v1.0</h1>
+        <p class="text-gray-400 mb-8">Asynchronous Cross-Platform Footprint Analyzer</p>
+
+        <div class="flex gap-4 mb-8">
+            <input type="text" id="username" placeholder="Enter target username..." 
+                   class="w-full p-4 bg-[#161b22] border border-gray-700 rounded text-white focus:outline-none focus:border-[#3fb950]">
+            <button onclick="runScan()" 
+                    class="px-8 py-4 bg-[#238636] text-white font-bold rounded hover:bg-[#2ea043] transition">
+                INITIATE
+            </button>
+        </div>
+
+        <div id="loading" class="hidden text-yellow-400 mb-4 animate-pulse">Scanning matrix... this takes ~2 seconds.</div>
+
+        <div id="results" class="hidden neon-border bg-[#161b22] rounded p-6">
+            <h2 class="text-2xl font-bold text-white mb-4 border-b border-gray-700 pb-2">Analysis Report</h2>
+            <div id="profiles" class="mb-6"></div>
+            <h3 class="text-lg font-bold text-[#58a6ff] mb-2">AI Correlation</h3>
+            <div id="report-text" class="text-gray-300 whitespace-pre-wrap"></div>
+        </div>
+    </div>
+
+    <script>
+        async function runScan() {
+            const username = document.getElementById('username').value;
+            if (!username) return;
+
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('profiles').innerHTML = '';
+
+            try {
+                const response = await fetch(`/api/scan?username=${username}`);
+                const data = await response.json();
+
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('results').classList.remove('hidden');
+
+                // Render Profiles
+                if (data.profiles && data.profiles.length > 0) {
+                    let links = '<ul class="list-disc pl-5 mb-4 space-y-2">';
+                    data.profiles.forEach(url => {
+                        links += `<li><a href="${url}" target="_blank" class="text-blue-400 hover:underline">${url}</a></li>`;
+                    });
+                    links += '</ul>';
+                    document.getElementById('profiles').innerHTML = links;
+                }
+
+                // Render Report
+                document.getElementById('report-text').innerText = data.report || "No correlation report generated.";
+            } catch (error) {
+                document.getElementById('loading').classList.add('hidden');
+                alert("Error connecting to backend engine.");
+            }
+        }
+    </script>
+</body>
+</html>
